@@ -49,11 +49,10 @@ public class SyntaxChecker {
 		String[] tokens = text.split("\n");
 		
 		for(int x = 0; x < tokens.length; x++) {
-//			String line = tokens[x].replace("\n", "").replace("\r", "");
 			String line = tokens[x];
 			
 //			String line = tokens[x].replace("\n", "").replace("\r", "");
-//		
+//			
 //			if(x == 0) {
 //				if(line.contains(" ")) {
 //					System.out.println("Program name cannot contain spaces");
@@ -84,6 +83,12 @@ public class SyntaxChecker {
 					System.out.println("Syntax Error at line " + (x + 1));
 					return false;
 				}
+			}
+			if(line.split(" ")[0].equals("sabihin-mo-na")) {
+				if(print(line))
+					continue;
+				else
+					return false;
 			}
 			
 			if(x == tokens.length - 1 && matchStack.isEmpty()) {
@@ -220,6 +225,36 @@ public class SyntaxChecker {
 	public boolean assignment(String text) {
 		
 		
+		
+		return false;
+	}
+	
+	public boolean print(String text) {
+		
+		String[] tokens = text.split(" ");
+		Stack<Integer> check = new Stack<Integer>();
+		
+		System.out.println(text);
+		
+		if(!tokens[0].equals("sabihin-mo-na")) {
+			if(!tokens[1].equals("(") && !tokens[tokens.length - 1].equals(")")) {
+				System.out.println("invalid print format");
+				return false;
+			}
+		}
+		
+		for(int x = 0; x < tokens.length; x++) {
+			if(tokens[x].equals("\"") && check.isEmpty()) {
+				check.push(1);
+				System.out.print(tokens[x]);
+			}
+			else if(tokens[x].equals("\"") && !check.isEmpty()) {
+				check.pop();
+			}
+			
+			if(check.isEmpty())
+				return true;
+		}
 		
 		return false;
 	}
