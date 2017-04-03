@@ -51,17 +51,18 @@ public class SyntaxChecker {
 		String[] tokens = text.split("\n");
 		
 		for(int x = 0; x < tokens.length; x++) {
-			String line = tokens[x].replace("\n", "").replace("\r", "");
+//			String line = tokens[x].replace("\n", "").replace("\r", "");
+			String line = tokens[x];
 			
-			if(x == 0) {
-				if(line.contains(" ")) {
-					System.out.println("Program name cannot contain spaces");
-					return false;
-				}
-				else {
-					System.out.println("Program name is " + line);
-				}
-			}
+//			if(x == 0) {
+//				if(line.contains(" ")) {
+//					System.out.println("Program name cannot contain spaces");
+//					return false;
+//				}
+//				else {
+//					System.out.println("Program name is " + line);
+//				}
+//			}
 			
 			if(line.equals("anak")) {
 				matchStack.push("anak");
