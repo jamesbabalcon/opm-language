@@ -15,9 +15,7 @@ public class SyntaxChecker {
 		reserved = new ArrayList<String>();
 		
 		addReserved();
-		
-		//hello world! 
-		
+				
 		if(valid(text) == true) {
 			System.out.println("Code is valid");
 		}
@@ -54,6 +52,8 @@ public class SyntaxChecker {
 //			String line = tokens[x].replace("\n", "").replace("\r", "");
 			String line = tokens[x];
 			
+//			String line = tokens[x].replace("\n", "").replace("\r", "");
+//		
 //			if(x == 0) {
 //				if(line.contains(" ")) {
 //					System.out.println("Program name cannot contain spaces");
@@ -115,19 +115,19 @@ public class SyntaxChecker {
 		return false;
 	}
 	
-	public boolean operator(String op) {
+	public boolean containsOperator(String op) {
 		
-		if(op.equals("+"))
+		if(op.contains("+"))
 			return true;
-		if(op.equals("-"))
+		if(op.contains("-"))
 			return true;
-		if(op.equals("*"))
+		if(op.contains("*"))
 			return true;
-		if(op.equals("/"))
+		if(op.contains("/"))
 			return true;
-		if(op.equals("%"))
+		if(op.contains("%"))
 			return true;
-		if(op.equals("^"))
+		if(op.contains("^"))
 			return true;
 		
 		return false;
@@ -179,6 +179,10 @@ public class SyntaxChecker {
 				return true;
 			}
 		}
+		else if(containsOperator(text)) {
+			
+		}
+		
 		else if(text.contains(",")) {
 			String multiple[] = text.split(",");
 			String type = "";
@@ -200,18 +204,18 @@ public class SyntaxChecker {
 		return false;
 	}
 	
-	public boolean operation(String text) {
-		
-		String[] tokens = text.split(" ");
-		
-		if(tokens.length == 2) {
-			if(operator(tokens[0]) && isVariable(tokens[1])) {
-				                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
-			}
-		}
-		
-		return false;
-	}
+//	public boolean operation(String text) {
+//		
+//		String[] tokens = text.split(" ");
+//		
+//		if(tokens.length == 2) {
+//			if(operator(tokens[0]) && isVariable(tokens[1])) {
+//				                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
+//			}
+//		}
+//		
+//		return false;
+//	}
 	
 	public boolean assignment(String text) {
 		
