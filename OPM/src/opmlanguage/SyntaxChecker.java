@@ -1,6 +1,5 @@
 package opmlanguage;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Stack;
 
@@ -173,13 +172,13 @@ public class SyntaxChecker {
 			String line2 = tokens[x].replace("\n", "");
 			String[] arr2 = line2.split(" ");
 			
-			x = branch(tokens, x, arr[0]);
+			x = branch(tokens, x, arr2[0]);
 		}
 		else{
 			x++;
 			String line2 = tokens[x].replace("\n", "");
 			String[] arr2 = line2.split(" ");
-			x = branch(tokens, x, arr[0]);
+			x = branch(tokens, x, arr2[0]);
 		}
 		
 		return x;
