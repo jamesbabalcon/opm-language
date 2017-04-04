@@ -5,6 +5,12 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -58,6 +64,47 @@ public class OPM extends JPanel implements ActionListener {
 		if(e.getSource() == run) {
 			console.setText("");
 			new SyntaxChecker(textArea.getText(), this);
+		}
+		else if(e.getSource() == open) {
+			String text = "";
+			BufferedReader br = null;
+			try {
+				br = new BufferedReader(new FileReader("res/file.txt"));
+			} catch (FileNotFoundException e1) {
+				e1.printStackTrace();
+			}
+			try {
+			    StringBuilder sb = new StringBuilder();
+			    String line = br.readLine();
+
+			    while (line != null) {
+			        sb.append(line);
+			        sb.append(System.lineSeparator());
+			        line = br.readLine();
+			    }
+			    text = sb.toString();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			} finally {
+			    try {
+					br.close();
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+			}
+			setConsoleText("file loaded");
+			textArea.setText(text);
+		}
+		else if(e.getSource() == save) {
+			try { 
+				FileWriter writer = new FileWriter("names.txt"); 
+				BufferedWriter bwr = new BufferedWriter(writer); 
+				bwr.write(textArea.getText()); 
+				bwr.close(); 
+				setConsoleText("succesfully written to a file"); 
+			} catch (IOException ioe) { 
+				ioe.printStackTrace(); 
+			}
 		}
 	}
 	
