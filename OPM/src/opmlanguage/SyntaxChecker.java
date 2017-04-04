@@ -85,8 +85,9 @@ public class SyntaxChecker {
 				}
 			}
 			if(line.split(" ")[0].equals("sabihin-mo-na")) {
-				if(print(line))
+				if(print(line)) {
 					continue;
+				}
 				else
 					return false;
 			}
@@ -233,8 +234,6 @@ public class SyntaxChecker {
 		
 		String[] tokens = text.split(" ");
 		Stack<Integer> check = new Stack<Integer>();
-		
-		System.out.println(text);
 		
 		if(!tokens[0].equals("sabihin-mo-na")) {
 			if(!tokens[1].equals("(") && !tokens[tokens.length - 1].equals(")")) {
