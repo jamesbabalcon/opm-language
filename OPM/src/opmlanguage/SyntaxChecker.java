@@ -1,5 +1,6 @@
 package opmlanguage;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Stack;
 
@@ -76,6 +77,18 @@ public class SyntaxChecker {
 				return false;
 			}
 			
+			//comment
+			if(line.split(" ")[0].equals("--"))
+				System.out.println("Comment: " + line.substring(3));
+			if(line.split(" ")[0].equals("-*")){
+				System.out.print("Comment: ");
+				comment(tokens, x);
+			}
+			
+			//branch statements
+			if(line.split(" ")[0].equals("kung-ako-nalang-sana")) 
+				x = branch(tokens, x, line.split(" ")[0]);
+			
 			if(type(line.split(" ")[0])) {
 				if(declaration(line))
 					continue;
@@ -104,6 +117,194 @@ public class SyntaxChecker {
 		return false;
 	}
 	
+	private int branch(String[] tokens, int x, String condition) {
+		
+		boolean condi = false;
+		
+		String line = tokens[x].replace("\n", "");
+		String[] arr = line.split(" ");
+		//System.out.println(x + " " + arr[0]);
+		if(condition.equals("tuldok")){
+			System.out.println("end");
+			System.out.println();
+			matchStack.pop();
+		}
+		else if(arr[0].equals("kung-ako-nalang-sana")){
+			matchStack.push("kung-ako-nalang-sana");
+			System.out.print("if " + arr[1] + " " + arr[2] + " " + arr[3]);
+			
+			condi = getCondition(arr[1], arr[2], arr[3]);
+			if(condi == true)
+				System.out.println(" ----->true");
+			else
+				System.out.println(" ----->false");
+			
+			System.out.println("	Execute Things");
+			
+			x++;
+			String line2 = tokens[x].replace("\n", "");
+			String[] arr2 = line2.split(" ");
+			
+			x = branch(tokens, x, arr2[0]);
+		}
+		else if(arr[0].equals("humanap-ka-ng-panget")){
+			System.out.print("else if " + arr[1] + " " + arr[2] + " " + arr[3]);
+			
+			condi = getCondition(arr[1], arr[2], arr[3]);
+			if(condi == true)
+				System.out.println(" ----->true");
+			else
+				System.out.println(" ----->false");
+			
+			System.out.println("	Execute Things");
+			
+			x++;
+			String line2 = tokens[x].replace("\n", "");
+			String[] arr2 = line2.split(" ");
+			
+			x = branch(tokens, x, arr2[0]);
+		}
+		else if(arr[0].equals("only-hope")){
+			System.out.println("else");
+			
+			System.out.println("	Execute Things");
+			
+			x++;
+			String line2 = tokens[x].replace("\n", "");
+			String[] arr2 = line2.split(" ");
+			
+			x = branch(tokens, x, arr[0]);
+		}
+		else{
+			x++;
+			String line2 = tokens[x].replace("\n", "");
+			String[] arr2 = line2.split(" ");
+			x = branch(tokens, x, arr[0]);
+		}
+		
+		return x;
+	}
+	
+	private boolean getCondition(String a, String relay, String b) {
+		// TODO Auto-generated method stub
+		
+		for(Variable v : variables) {
+			if(a.equals(v.getName())) {
+				for(Variable v2 : variables) {
+					if(b.equals(v2.getName())) {
+						if(relay.equals("==")){
+							if(v.getInitValue().equals(v2.getInitValue()))
+								return true;
+						}
+						else if(relay.equals("!=")){
+							if(!(v.getInitValue().equals(v2.getInitValue())))
+								return true;
+						}
+						else if(relay.equals(">") || relay.equals(">=") || relay.equals("<") || relay.equals("<=")){
+							try{
+								int k = Integer.parseInt(v.getInitValue());
+								int l = Integer.parseInt(v2.getInitValue());
+								if(relay.equals(">") && k > l)
+									return true;
+								else if(relay.equals("<") && k < l)
+									return true;
+								else if(relay.equals(">=") && k >= l)
+									return true;
+								else if(relay.equals("<=") && k <= l)
+									return true;
+							}catch(IllegalArgumentException e){
+								return false;
+							}
+						}
+					}
+				}
+				if(b.equals(b)) {
+					if(relay.equals("==")){
+						if(v.getInitValue().equals(b))
+							return true;
+					}
+					else if(relay.equals("!=")){
+						if(!(v.getInitValue().equals(b)))
+							return true;
+					}
+					else if(relay.equals(">") || relay.equals(">=") || relay.equals("<") || relay.equals("<=")){
+						try{
+							int k = Integer.parseInt(v.getInitValue());
+							int l = Integer.parseInt(b);
+							if(relay.equals(">") && k > l)
+								return true;
+							else if(relay.equals("<") && k < l)
+								return true;
+							else if(relay.equals(">=") && k >= l)
+								return true;
+							else if(relay.equals("<=") && k <= l)
+								return true;
+						}catch(IllegalArgumentException e){
+							return false;
+						}
+					}
+				}
+			}
+		}
+		
+		for(Variable v2 : variables) {
+			if(b.equals(v2.getName())) {					
+				if(b.equals(v2.getName())) {
+					if(relay.equals("==")){
+						if(a.equals(v2.getInitValue()))
+							return true;
+					}
+					else if(relay.equals("!=")){
+						if(!(a.equals(v2.getInitValue())))
+							return true;
+					}
+					else if(relay.equals(">") || relay.equals(">=") || relay.equals("<") || relay.equals("<=")){
+						try{
+							int k = Integer.parseInt(a);
+							int l = Integer.parseInt(v2.getInitValue());
+							if(relay.equals(">") && k > l)
+								return true;
+							else if(relay.equals("<") && k < l)
+								return true;
+							else if(relay.equals(">=") && k >= l)
+								return true;
+							else if(relay.equals("<=") && k <= l)
+								return true;
+						}catch(IllegalArgumentException e){
+							return false;
+						}
+					}
+				}	
+			}
+		}
+		if(relay.equals("==")){
+			if(a.equals(b))
+				return true;
+		}
+		else if(relay.equals("!=")){
+			if(!(a.equals(b)))
+				return true;
+		}
+		else if(relay.equals(">") || relay.equals(">=") || relay.equals("<") || relay.equals("<=")){
+			try{
+				int k = Integer.parseInt(a);
+				int l = Integer.parseInt(b);
+				if(relay.equals(">") && k > l)
+					return true;
+				else if(relay.equals("<") && k < l)
+					return true;
+				else if(relay.equals(">=") && k >= l)
+					return true;
+				else if(relay.equals("<=") && k <= l)
+					return true;
+			}catch(IllegalArgumentException e){
+				return false;
+			}
+		}
+		
+		return false;
+	}
+
 	public boolean type(String type) {
 		
 		if(type.equals("hotdog"))
@@ -118,6 +319,32 @@ public class SyntaxChecker {
 			return true;
 		
 		return false;
+	}
+	
+	private void comment(String[] tokens, int x) {
+
+		boolean endComment = false;
+		
+		for(; endComment != true; x++) {
+			String line = tokens[x].replace("\n", "").replace("\r", "");
+			
+			String[] arr = line.split(" ");
+			
+			for(int i = 0 ; i < arr.length; i++){
+				if(arr[i].equals("*-")){
+					endComment = true;
+					break;
+				}
+				else if(arr[i].equals("-*"))
+					continue;
+				else
+					System.out.print(arr[i] + " ");
+			}
+			
+		}
+		System.out.println();
+		System.out.println();
+
 	}
 	
 	public boolean containsOperator(String op) {
@@ -215,7 +442,7 @@ public class SyntaxChecker {
 //		
 //		if(tokens.length == 2) {
 //			if(operator(tokens[0]) && isVariable(tokens[1])) {
-//				                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
+                                                                                                         
 //			}
 //		}
 //		
