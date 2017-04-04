@@ -3,13 +3,18 @@ package opmlanguage;
 import java.util.ArrayList;
 import java.util.Stack;
 
+import view.OPM;
+
 public class SyntaxChecker {
 
 	private Stack<String> matchStack;
 	private ArrayList<Variable> variables;
 	private ArrayList<String> reserved;
+	private OPM opm;
 	
-	public SyntaxChecker(String text) {
+	public SyntaxChecker(String text, OPM opm) {
+		this.opm = opm;
+		
 		matchStack = new Stack<String>();
 		variables = new ArrayList<Variable>();
 		reserved = new ArrayList<String>();
@@ -17,10 +22,10 @@ public class SyntaxChecker {
 		addReserved();
 				
 		if(valid(text) == true) {
-			System.out.println("Code is valid");
+			opm.setConsoleText("Code is valid");
 		}
 		else {
-			System.out.println("Code is invalid");
+			opm.setConsoleText("Code is invalid");
 		}
 	}
 	
@@ -55,30 +60,30 @@ public class SyntaxChecker {
 //			
 //			if(x == 0) {
 //				if(line.contains(" ")) {
-//					System.out.println("Program name cannot contain spaces");
+//					opm.setConsoleText("Program name cannot contain spaces");
 //					return false;
 //				}
 //				else {
-//					System.out.println("Program name is " + line);
+//					opm.setConsoleText("Program name is " + line);
 //				}
 //			}
 			
 			if(line.equals("anak")) {
 				matchStack.push("anak");
-				System.out.println("Pushing to Stack");
+				opm.setConsoleText("Pushing to Stack");
 			}
 			if(line.equals("tuldok") && !matchStack.isEmpty()) {
 				matchStack.pop();
-				System.out.println("Popping from Stack");
+				opm.setConsoleText("Popping from Stack");
 			}
 			else if(line.equals("tuldok") && matchStack.isEmpty()) {
-				System.out.println("Unexpected EOF");
+				opm.setConsoleText("Unexpected EOF");
 				return false;
 			}
 			
 			//comment
 			if(line.split(" ")[0].equals("--"))
-				System.out.println("Comment: " + line.substring(3));
+				opm.setConsoleText("Comment: " + line.substring(3));
 			if(line.split(" ")[0].equals("-*")){
 				System.out.print("Comment: ");
 				comment(tokens, x);
@@ -92,7 +97,7 @@ public class SyntaxChecker {
 				if(declaration(line))
 					continue;
 				else {
-					System.out.println("Syntax Error at line " + (x + 1));
+					opm.setConsoleText("Syntax Error at line " + (x + 1));
 					return false;
 				}
 			}
@@ -105,11 +110,11 @@ public class SyntaxChecker {
 			}
 			
 			if(x == tokens.length - 1 && matchStack.isEmpty()) {
-				System.out.println("End of File, Stack is Empty");
+				opm.setConsoleText("End of File, Stack is Empty");
 				return true;
 			}
 			else if(x == tokens.length - 1 && !matchStack.isEmpty()) {
-				System.out.println("End of File, Stack is not Empty");
+				opm.setConsoleText("End of File, Stack is not Empty");
 				return false;
 			}
 		}
@@ -123,10 +128,10 @@ public class SyntaxChecker {
 		
 		String line = tokens[x].replace("\n", "");
 		String[] arr = line.split(" ");
-		//System.out.println(x + " " + arr[0]);
+		//opm.setConsoleText(x + " " + arr[0]);
 		if(condition.equals("tuldok")){
-			System.out.println("end");
-			System.out.println();
+			opm.setConsoleText("end");
+			opm.setConsoleText("\n");
 			matchStack.pop();
 		}
 		else if(arr[0].equals("kung-ako-nalang-sana")){
@@ -135,11 +140,11 @@ public class SyntaxChecker {
 			
 			condi = getCondition(arr[1], arr[2], arr[3]);
 			if(condi == true)
-				System.out.println(" ----->true");
+				opm.setConsoleText(" ----->true");
 			else
-				System.out.println(" ----->false");
+				opm.setConsoleText(" ----->false");
 			
-			System.out.println("	Execute Things");
+			opm.setConsoleText("	Execute Things");
 			
 			x++;
 			String line2 = tokens[x].replace("\n", "");
@@ -152,11 +157,11 @@ public class SyntaxChecker {
 			
 			condi = getCondition(arr[1], arr[2], arr[3]);
 			if(condi == true)
-				System.out.println(" ----->true");
+				opm.setConsoleText(" ----->true");
 			else
-				System.out.println(" ----->false");
+				opm.setConsoleText(" ----->false");
 			
-			System.out.println("	Execute Things");
+			opm.setConsoleText("	Execute Things");
 			
 			x++;
 			String line2 = tokens[x].replace("\n", "");
@@ -165,9 +170,9 @@ public class SyntaxChecker {
 			x = branch(tokens, x, arr2[0]);
 		}
 		else if(arr[0].equals("only-hope")){
-			System.out.println("else");
+			opm.setConsoleText("else");
 			
-			System.out.println("	Execute Things");
+			opm.setConsoleText("	Execute Things");
 			
 			x++;
 			String line2 = tokens[x].replace("\n", "");
@@ -342,8 +347,8 @@ public class SyntaxChecker {
 			}
 			
 		}
-		System.out.println();
-		System.out.println();
+		opm.setConsoleText("\n");
+		opm.setConsoleText("\n");
 
 	}
 	
@@ -369,13 +374,13 @@ public class SyntaxChecker {
 		
 		for(Variable v : variables) {
 			if(str.equals(v.getName())) {
-				System.out.println("Duplicate variables not allowed");
+				opm.setConsoleText("Duplicate variables not allowed");
 				return false;
 			}
 		}
 		for(String s : reserved) {
 			if(str.equals(s)) {
-				System.out.println("Reserved word");
+				opm.setConsoleText("Reserved word");
 				return false;
 			}
 		}
@@ -398,7 +403,7 @@ public class SyntaxChecker {
 		if(tokens.length == 2) {
 			if(type(tokens[0]) && legal(tokens[1])) {
 				Variable var = new Variable(tokens[0], tokens[1]);
-				System.out.println("Variable " + var.getName() + " of type " + var.getType() + " created");
+				opm.setConsoleText("Variable " + var.getName() + " of type " + var.getType() + " created");
 				variables.add(var);
 				return true;
 			}
@@ -406,7 +411,7 @@ public class SyntaxChecker {
 		else if(tokens.length == 4 && legal(tokens[1])) {
 			if(type(tokens[0]) && tokens[2].equals("=")) {
 				Variable var = new Variable(tokens[0], tokens[1], tokens[3]);
-				System.out.println("Variable " + var.getName() + " of type " + var.getType() + " with value " + tokens[3] + " created");
+				opm.setConsoleText("Variable " + var.getName() + " of type " + var.getType() + " with value " + tokens[3] + " created");
 				variables.add(var);
 				return true;
 			}
@@ -418,7 +423,7 @@ public class SyntaxChecker {
 				variables.add(var);
 				boolean result = operation(var, tokens[3], tokens[4], tokens[5]);
 				if(result) {
-					System.out.println("Variable " + var.getName() + " of type " + var.getType() + " with value "
+					opm.setConsoleText("Variable " + var.getName() + " of type " + var.getType() + " with value "
 				+ tokens[3] + tokens[4] + tokens[5] + " created");
 				}
 				return result;
@@ -451,8 +456,8 @@ public class SyntaxChecker {
 		operand1 = operand1.trim().replaceAll(" \n ", "");
 		operand2 = operand2.trim().replaceAll(" \n ", "");
 		
-		boolean valid = false;
-		String op1 = "", op2 = "", result = "";
+//		boolean valid = false;
+//		String op1 = "", op2 = "", result = "";
 			
 		for(Variable v1 : variables) {
 			if(v1.getName().equals(operand1) && v1.getType().equals(var.getType())) {
@@ -533,9 +538,10 @@ public class SyntaxChecker {
 		return "";
 	}
 
-	private void getValue() {
-		
-	}
+//	/*private void getValue() {
+//		
+//	}
+
 	public boolean assignment(String text) {
 		
 		
@@ -550,7 +556,7 @@ public class SyntaxChecker {
 		
 		if(!tokens[0].equals("sabihin-mo-na")) {
 			if(!tokens[1].equals("(") && !tokens[tokens.length - 1].equals(")")) {
-				System.out.println("invalid print format");
+				opm.setConsoleText("invalid print format");
 				return false;
 			}
 		}

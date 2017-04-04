@@ -8,7 +8,7 @@ import java.io.IOException;
 public class OPMLanguage {
 	
 	public OPMLanguage() {
-		new SyntaxChecker(loadFile());
+//		new SyntaxChecker(loadFile());
 	}
 	
 	public String loadFile() {
