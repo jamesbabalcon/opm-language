@@ -84,6 +84,12 @@ public class SyntaxChecker {
 					return false;
 				}
 			}
+			if(line.split(" ")[0].equals("sabihin-mo-na")) {
+				if(print(line))
+					continue;
+				else
+					return false;
+			}
 			
 			if(x == tokens.length - 1 && matchStack.isEmpty()) {
 				System.out.println("End of File, Stack is Empty");
@@ -190,6 +196,7 @@ public class SyntaxChecker {
 				return result;
 			}
 		}
+
 		else if(text.contains(",")) {
 			String multiple[] = text.split(",");
 			String type = "";
@@ -317,6 +324,36 @@ public class SyntaxChecker {
 	public boolean assignment(String text) {
 		
 		
+		
+		return false;
+	}
+	
+	public boolean print(String text) {
+		
+		String[] tokens = text.split(" ");
+		Stack<Integer> check = new Stack<Integer>();
+		
+		System.out.println(text);
+		
+		if(!tokens[0].equals("sabihin-mo-na")) {
+			if(!tokens[1].equals("(") && !tokens[tokens.length - 1].equals(")")) {
+				System.out.println("invalid print format");
+				return false;
+			}
+		}
+		
+		for(int x = 0; x < tokens.length; x++) {
+			if(tokens[x].equals("\"") && check.isEmpty()) {
+				check.push(1);
+				System.out.print(tokens[x]);
+			}
+			else if(tokens[x].equals("\"") && !check.isEmpty()) {
+				check.pop();
+			}
+			
+			if(check.isEmpty())
+				return true;
+		}
 		
 		return false;
 	}
