@@ -62,7 +62,7 @@ public class OPM extends JPanel implements ActionListener {
 
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == run) {
-			console.setText("");
+			consoleText = "";
 			new SyntaxChecker(textArea.getText(), this);
 		}
 		else if(e.getSource() == open) {
@@ -97,7 +97,7 @@ public class OPM extends JPanel implements ActionListener {
 		}
 		else if(e.getSource() == save) {
 			try { 
-				FileWriter writer = new FileWriter("names.txt"); 
+				FileWriter writer = new FileWriter("res/file.txt"); 
 				BufferedWriter bwr = new BufferedWriter(writer); 
 				bwr.write(textArea.getText()); 
 				bwr.close(); 

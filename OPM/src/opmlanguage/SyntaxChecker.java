@@ -56,18 +56,6 @@ public class SyntaxChecker {
 		for(int x = 0; x < tokens.length; x++) {
 			String line = tokens[x];
 			
-//			String line = tokens[x].replace("\n", "").replace("\r", "");
-//			
-//			if(x == 0) {
-//				if(line.contains(" ")) {
-//					opm.setConsoleText("Program name cannot contain spaces");
-//					return false;
-//				}
-//				else {
-//					opm.setConsoleText("Program name is " + line);
-//				}
-//			}
-			
 			if(line.equals("anak")) {
 				matchStack.push("anak");
 				opm.setConsoleText("Pushing to Stack");
@@ -101,7 +89,7 @@ public class SyntaxChecker {
 					return false;
 				}
 			}
-			if(line.split(" ")[0].equals("sabihin-mo-na")) {
+			if(line.split(":")[0].equals("sabihin-mo-na")) {
 				if(print(line)) {
 					continue;
 				}
@@ -537,6 +525,15 @@ public class SyntaxChecker {
 		}
 		return "";
 	}
+	
+	public Variable getVariable(String name) {
+		for(Variable var : variables) {
+			if(name.equals(var.getName()))
+				return var;
+		}
+		
+		return null;
+	}
 
 //	/*private void getValue() {
 //		
@@ -551,27 +548,17 @@ public class SyntaxChecker {
 	
 	public boolean print(String text) {
 		
-		String[] tokens = text.split(" ");
-		Stack<Integer> check = new Stack<Integer>();
-		
-		if(!tokens[0].equals("sabihin-mo-na")) {
-			if(!tokens[1].equals("(") && !tokens[tokens.length - 1].equals(")")) {
-				opm.setConsoleText("invalid print format");
-				return false;
-			}
+		String[] tokens = text.split(":", 2);
+//		int check = 0;
+		String lex = tokens[1];
+
+		if(isVariable(lex)) {
+			opm.setConsoleText("printing " + getVariable(lex).getName());
+			return true;
 		}
-		
-		for(int x = 0; x < tokens.length; x++) {
-			if(tokens[x].equals("\"") && check.isEmpty()) {
-				check.push(1);
-				System.out.print(tokens[x]);
-			}
-			else if(tokens[x].equals("\"") && !check.isEmpty()) {
-				check.pop();
-			}
-			
-			if(check.isEmpty())
-				return true;
+		else if(lex.trim().startsWith("\"") && lex.trim().endsWith("\"")) {
+			opm.setConsoleText("printing " + lex);
+			return true;
 		}
 		
 		return false;
