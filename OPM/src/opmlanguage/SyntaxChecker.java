@@ -96,6 +96,13 @@ public class SyntaxChecker {
 				else
 					return false;
 			}
+			if(line.split(":")[0].equals("nandito-ako")) {
+				if(scan(line)) {
+					continue;
+				}
+				else
+					return false;
+			}
 			
 			if(x == tokens.length - 1 && matchStack.isEmpty()) {
 				opm.setConsoleText("End of File, Stack is Empty");
@@ -561,6 +568,20 @@ public class SyntaxChecker {
 			return true;
 		}
 		
+		return false;
+	}
+	
+	public boolean scan(String text) {
+		
+		String[] tokens = text.split(":", 2);
+		String[] lex = tokens[1].split(",");
+		
+		if(isVariable(lex[0].trim())) {
+			getVariable(lex[0]).setInitValue(lex[1]);
+			return true;
+		}
+		
+		System.out.println("ambot");
 		return false;
 	}
 }
