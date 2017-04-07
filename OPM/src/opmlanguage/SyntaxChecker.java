@@ -89,17 +89,16 @@ public class SyntaxChecker {
 					return false;
 				}
 			}
-			if(line.split(":")[0].equals("sabihin-mo-na")) {
-				if(print(line)) {
+			if(line.split(":")[0].equals("nandito-ako")) {
+				if(scan(line)) {
 					continue;
 				}
 				else
 					return false;
 			}
-			if(line.split(":")[0].equals("nandito-ako")) {
-				if(scan(line)) {
+			if(line.split(" ")[0].equals("sabihin-mo-na")) {
+				if(print(line))
 					continue;
-				}
 				else
 					return false;
 			}
@@ -411,8 +410,8 @@ public class SyntaxChecker {
 				return true;
 			}
 		}
-		else if(containsOperator(text)) {
 
+		else if(containsOperator(text)) {
 			if(type(tokens[0]) && tokens[2].equals("=")) {
 				Variable var = new Variable(tokens[0], tokens[1]);
 				variables.add(var);
@@ -424,6 +423,7 @@ public class SyntaxChecker {
 				return result;
 			}
 		}
+
 		else if(text.contains(",")) {
 			String multiple[] = text.split(",");
 			String type = "";
@@ -444,7 +444,6 @@ public class SyntaxChecker {
 		}
 		return false;
 	}
-	
 	
 	private boolean operation(Variable var, String operand1, String operator, String operand2) {
 		
@@ -580,8 +579,7 @@ public class SyntaxChecker {
 			getVariable(lex[0]).setInitValue(lex[1]);
 			return true;
 		}
-		
-		System.out.println("ambot");
+				
 		return false;
 	}
 }

@@ -1,0 +1,7 @@
+program hello
+anak
+
+hotdog x
+
+nandito-ako:x,5
+tuldok
