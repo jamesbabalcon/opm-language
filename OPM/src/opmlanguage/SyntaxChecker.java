@@ -513,7 +513,7 @@ public class SyntaxChecker {
 	public boolean declaration(String text) {
 		
 		String[] tokens = text.split(" ");
-		
+				
 		if(tokens.length == 2) {
 			if(type(tokens[0]) && legal(tokens[1])) {
 				Variable var = new Variable(tokens[0], tokens[1]);
@@ -530,7 +530,7 @@ public class SyntaxChecker {
 				return true;
 			}
 		}
-
+		
 		else if(containsOperator(text)) {
 			if(type(tokens[0]) && tokens[2].equals("=")) {
 				Variable var = new Variable(tokens[0], tokens[1]);
@@ -543,8 +543,9 @@ public class SyntaxChecker {
 				return result;
 			}
 		}
-
+		
 		else if(text.contains(",")) {
+			System.out.println("hello");
 			String multiple[] = text.split(",");
 			String type = "";
 			for(int x = 0; x < multiple.length; x++) {
@@ -554,6 +555,7 @@ public class SyntaxChecker {
 				}
 				else {
 					multiple[x] = type + multiple[x];
+					System.out.println(multiple[x]);
 				}
 				
 				if(!declaration(multiple[x])) {
@@ -562,6 +564,7 @@ public class SyntaxChecker {
 			}
 			return true;
 		}
+		
 		return false;
 	}
 	

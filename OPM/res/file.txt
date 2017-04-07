@@ -1,7 +1,4 @@
-program hello
+hello
 anak
-
-hotdog x
-
-nandito-ako:x,5
+hotdog hello, hi, hu
 tuldok
