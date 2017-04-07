@@ -81,6 +81,12 @@ public class SyntaxChecker {
 			if(line.split(" ")[0].equals("kung-ako-nalang-sana")) 
 				x = branch(tokens, x, line.split(" ")[0]);
 			
+			//loop statements
+			if(line.split(" ")[0].equals("hanggang-kailan"))
+				x = whileLoop(tokens, x);
+			if(line.split(" ")[0].equals("doo-bidoo"))
+				x = dowhile(tokens, x);
+			
 			if(type(line.split(" ")[0])) {
 				if(declaration(line))
 					continue;
@@ -117,16 +123,70 @@ public class SyntaxChecker {
 		return false;
 	}
 	
+	private int dowhile(String[] tokens, int x) {
+
+		boolean condi = true;
+		String[] arr;
+		int y;
+		
+		do{
+			y = x+1;
+			
+			do{
+				System.out.println("	Execute Things");
+				
+				y++;
+				String line = tokens[y].replace("\n", "");
+				arr = line.split(" ");
+				
+			}while(!arr[0].equals("muling-ibalik"));
+			
+			condi = getCondition(arr[1], arr[2], arr[3]);
+		}while(condi == true);
+		
+		return y+2;	 
+	}
+
+	private int whileLoop(String[] tokens, int x) {
+		
+		boolean condi = true;
+		String[] arr2;
+		int y;
+		
+		String line = tokens[x].replace("\n", "");
+		String[] arr = line.split(" ");
+		
+		condi = getCondition(arr[1], arr[2], arr[3]);
+		y = x+1;
+		
+		while(condi == true){
+			y = x+1;
+			
+			do{
+				System.out.println("	Execute Things");
+				
+				y++;
+				String line2 = tokens[y].replace("\n", "");
+				arr2 = line2.split(" ");
+			
+			}while(!arr2[0].equals("tuldok"));
+			
+			condi = getCondition(arr[1], arr[2], arr[3]);
+		}
+		
+		return y;	 
+	}
+
 	private int branch(String[] tokens, int x, String condition) {
 		
 		boolean condi = false;
 		
 		String line = tokens[x].replace("\n", "");
 		String[] arr = line.split(" ");
-		//opm.setConsoleText(x + " " + arr[0]);
+		//System.out.println(x + " " + arr[0]);
 		if(condition.equals("tuldok")){
-			opm.setConsoleText("end");
-			opm.setConsoleText("\n");
+			System.out.println("end");
+			System.out.println();
 			matchStack.pop();
 		}
 		else if(arr[0].equals("kung-ako-nalang-sana")){
@@ -134,52 +194,105 @@ public class SyntaxChecker {
 			System.out.print("if " + arr[1] + " " + arr[2] + " " + arr[3]);
 			
 			condi = getCondition(arr[1], arr[2], arr[3]);
-			if(condi == true)
-				opm.setConsoleText(" ----->true");
-			else
-				opm.setConsoleText(" ----->false");
-			
-			opm.setConsoleText("	Execute Things");
-			
-			x++;
-			String line2 = tokens[x].replace("\n", "");
-			String[] arr2 = line2.split(" ");
-			
-			x = branch(tokens, x, arr2[0]);
+			if(condi == true){
+				System.out.println(" ----->true");
+				
+				System.out.println("	Execute Things");
+				
+				x++;
+				String line2 = tokens[x].replace("\n", "");
+				String[] arr2 = line2.split(" ");
+				
+				while(!arr2[0].equals("tuldok")){
+					x++;
+					line2 = tokens[x].replace("\n", "");
+					arr2 = line2.split(" ");
+				}
+				
+				return x;
+			}
+			else{
+				System.out.println(" ----->false");
+				
+				x++;
+				String line2 = tokens[x].replace("\n", "");
+				String[] arr2 = line2.split(" ");
+				
+				while(!arr2[0].equals("tuldok")){
+					x++;
+					line2 = tokens[x].replace("\n", "");
+					arr2 = line2.split(" ");
+					
+					if(arr2[0].equals("humanap-ka-ng-panget")){
+						x = branch(tokens, x, arr2[0]);
+						break;
+					}
+					else if(arr2[0].equals("only-hope")){
+						x = branch(tokens, x, arr2[0]);
+						break;
+					}
+				}
+			}
 		}
 		else if(arr[0].equals("humanap-ka-ng-panget")){
 			System.out.print("else if " + arr[1] + " " + arr[2] + " " + arr[3]);
 			
 			condi = getCondition(arr[1], arr[2], arr[3]);
-			if(condi == true)
-				opm.setConsoleText(" ----->true");
-			else
-				opm.setConsoleText(" ----->false");
-			
-			opm.setConsoleText("	Execute Things");
-			
-			x++;
-			String line2 = tokens[x].replace("\n", "");
-			String[] arr2 = line2.split(" ");
-			
-			x = branch(tokens, x, arr2[0]);
+			if(condi == true){
+				System.out.println(" ----->true");
+				
+				System.out.println("	Execute Things");
+				
+				x++;
+				String line2 = tokens[x].replace("\n", "");
+				String[] arr2 = line2.split(" ");
+				
+				while(!arr2[0].equals("tuldok")){
+					x++;
+					line2 = tokens[x].replace("\n", "");
+					arr2 = line2.split(" ");
+				}
+				
+				return x;
+			}
+			else{
+				System.out.println(" ----->false");
+				
+				x++;
+				String line2 = tokens[x].replace("\n", "");
+				String[] arr2 = line2.split(" ");
+				
+				while(!arr2[0].equals("tuldok")){
+					x++;
+					line2 = tokens[x].replace("\n", "");
+					arr2 = line2.split(" ");
+					
+					if(arr2[0].equals("humanap-ka-ng-panget")){
+						x = branch(tokens, x, arr2[0]);
+						break;
+					}
+					else if(arr2[0].equals("only-hope")){
+						x = branch(tokens, x, arr2[0]);
+						break;
+					}
+				}
+			}
 		}
 		else if(arr[0].equals("only-hope")){
-			opm.setConsoleText("else");
-			
-			opm.setConsoleText("	Execute Things");
+			System.out.println("else");
+			System.out.println("	Execute Things");
 			
 			x++;
 			String line2 = tokens[x].replace("\n", "");
 			String[] arr2 = line2.split(" ");
 			
-			x = branch(tokens, x, arr2[0]);
-		}
-		else{
-			x++;
-			String line2 = tokens[x].replace("\n", "");
-			String[] arr2 = line2.split(" ");
-			x = branch(tokens, x, arr2[0]);
+			while(!arr2[0].equals("tuldok")){
+				x++;
+				line2 = tokens[x].replace("\n", "");
+				arr2 = line2.split(" ");
+			}
+			
+			return x;
 		}
 		
 		return x;
@@ -197,8 +310,8 @@ public class SyntaxChecker {
 								return true;
 						}
 						else if(relay.equals("!=")){
-							if(!(v.getInitValue().equals(v2.getInitValue())))
-								return true;
+							if((v.getInitValue().equals(v2.getInitValue())))
+								return false;
 						}
 						else if(relay.equals(">") || relay.equals(">=") || relay.equals("<") || relay.equals("<=")){
 							try{
@@ -224,8 +337,8 @@ public class SyntaxChecker {
 							return true;
 					}
 					else if(relay.equals("!=")){
-						if(!(v.getInitValue().equals(b)))
-							return true;
+						if((v.getInitValue().equals(b)))
+							return false;
 					}
 					else if(relay.equals(">") || relay.equals(">=") || relay.equals("<") || relay.equals("<=")){
 						try{
@@ -248,15 +361,15 @@ public class SyntaxChecker {
 		}
 		
 		for(Variable v2 : variables) {
-			if(b.equals(v2.getName())) {					
+			if(b.equals(v2.getName())) {
 				if(b.equals(v2.getName())) {
 					if(relay.equals("==")){
 						if(a.equals(v2.getInitValue()))
 							return true;
 					}
 					else if(relay.equals("!=")){
-						if(!(a.equals(v2.getInitValue())))
-							return true;
+						if((a.equals(v2.getInitValue())))
+							return false;
 					}
 					else if(relay.equals(">") || relay.equals(">=") || relay.equals("<") || relay.equals("<=")){
 						try{
@@ -282,8 +395,8 @@ public class SyntaxChecker {
 				return true;
 		}
 		else if(relay.equals("!=")){
-			if(!(a.equals(b)))
-				return true;
+			if((a.equals(b)))
+				return false;
 		}
 		else if(relay.equals(">") || relay.equals(">=") || relay.equals("<") || relay.equals("<=")){
 			try{
