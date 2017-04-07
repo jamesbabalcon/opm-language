@@ -1,7 +1,6 @@
 program hello
 anak
 
-hotdog x
+hotdog x, y, z = 5, charlotte
 
-nandito-ako:x,5
 tuldok

@@ -109,7 +109,7 @@ public class SyntaxChecker {
 				else
 					return false;
 			}
-			if(line.split(" ")[0].equals("sabihin-mo-na")) {
+			if(line.split(":")[0].equals("sabihin-mo-na")) {
 				if(print(line))
 					continue;
 				else
@@ -305,7 +305,6 @@ public class SyntaxChecker {
 	}
 	
 	private boolean getCondition(String a, String relay, String b) {
-		// TODO Auto-generated method stub
 		
 		for(Variable v : variables) {
 			if(a.equals(v.getName())) {
@@ -511,40 +510,9 @@ public class SyntaxChecker {
 	}
 	
 	public boolean declaration(String text) {
-		
 		String[] tokens = text.split(" ");
 		
-		if(tokens.length == 2) {
-			if(type(tokens[0]) && legal(tokens[1])) {
-				Variable var = new Variable(tokens[0], tokens[1]);
-				opm.setConsoleText("Variable " + var.getName() + " of type " + var.getType() + " created");
-				variables.add(var);
-				return true;
-			}
-		}
-		else if(tokens.length == 4 && legal(tokens[1])) {
-			if(type(tokens[0]) && tokens[2].equals("=")) {
-				Variable var = new Variable(tokens[0], tokens[1], tokens[3]);
-				opm.setConsoleText("Variable " + var.getName() + " of type " + var.getType() + " with value " + tokens[3] + " created");
-				variables.add(var);
-				return true;
-			}
-		}
-
-		else if(containsOperator(text)) {
-			if(type(tokens[0]) && tokens[2].equals("=")) {
-				Variable var = new Variable(tokens[0], tokens[1]);
-				variables.add(var);
-				boolean result = operation(var, tokens[3], tokens[4], tokens[5]);
-				if(result) {
-					opm.setConsoleText("Variable " + var.getName() + " of type " + var.getType() + " with value "
-				+ tokens[3] + tokens[4] + tokens[5] + " created");
-				}
-				return result;
-			}
-		}
-
-		else if(text.contains(",")) {
+		if(text.contains(",")) {
 			String multiple[] = text.split(",");
 			String type = "";
 			for(int x = 0; x < multiple.length; x++) {
@@ -562,10 +530,39 @@ public class SyntaxChecker {
 			}
 			return true;
 		}
+		else if(tokens.length == 2) {
+			if(type(tokens[0]) && legal(tokens[1])) {
+				Variable var = new Variable(tokens[0], tokens[1]);
+				opm.setConsoleText("Variable " + var.getName() + " of type " + var.getType() + " created");
+				variables.add(var);
+				return true;
+			}
+		}
+		else if(tokens.length == 4 && legal(tokens[1])) {
+			if(type(tokens[0]) && tokens[2].equals("=")) {
+				Variable var = new Variable(tokens[0], tokens[1], tokens[3]);
+				opm.setConsoleText("Variable " + var.getName() + " of type " + var.getType() + " with value " + tokens[3] + " created");
+				variables.add(var);
+				return true;
+			}
+		}
+		else if(containsOperator(text)) {
+			if(type(tokens[0]) && tokens[2].equals("=")) {
+				Variable var = new Variable(tokens[0], tokens[1]);
+				variables.add(var);
+				boolean result = operation(var, tokens[3], tokens[4], tokens[5]);
+				if(result) {
+					opm.setConsoleText("Variable " + var.getName() + " of type " + var.getType() + " with value "
+				+ tokens[3] + tokens[4] + tokens[5] + " created");
+				}
+				return result;
+			}
+		}
+		
 		return false;
 	}
 	
-	private boolean operation(Variable var, String operand1, String operator, String operand2) {
+	public boolean operation(Variable var, String operand1, String operator, String operand2) {
 		
 		operand1 = operand1.trim().replaceAll(" \n ", "");
 		operand2 = operand2.trim().replaceAll(" \n ", "");
@@ -602,35 +599,6 @@ public class SyntaxChecker {
 			return true;
 		
 		return false;
-			
-//				if(var.getType().equals(getType(operand2))) {
-//					op2 = "" + operand2;
-//					valid = true;
-//				}
-//			}
-//		}
-//		
-//		if(valid) {
-//			if(var.getType().equals("hotdog")) {
-//				int value1 = Integer.parseInt(op1);
-//				int value2 = Integer.parseInt(op2);
-//				result = "" + (value1 + value2);
-//			} else if(var.getType().equals("jumbo-hotdog")) {
-//				float value1 = Float.parseFloat(op1);
-//				float value2 = Float.parseFloat(op2);
-//				result = "" + (value1 + value2);
-//			} else if(var.getType().equals("letra")) {
-//				char value1 = op1.charAt(0);
-//				char value2 = op2.charAt(0);
-//				result = "" + value1 + value2;
-//			} else if(var.getType().equals("salita")) {
-//				String value1 = op1;
-//				String value2 = op2;
-//				result = "" + value1 + value2;
-//			}
-//			return result;
-//		}
-//		return "";
 	}
 
 	private String getType(String value) {
