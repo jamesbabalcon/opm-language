@@ -109,7 +109,7 @@ public class SyntaxChecker {
 				else
 					return false;
 			}
-			if(line.split(" ")[0].equals("sabihin-mo-na")) {
+			if(line.split(":")[0].equals("sabihin-mo-na")) {
 				if(print(line))
 					continue;
 				else
@@ -134,7 +134,8 @@ public class SyntaxChecker {
 		boolean condi = true;
 		String[] arr;
 		int y;
-		
+
+		System.out.println("length: " + tokens.length);
 		do{
 			y = x+1;
 			
@@ -142,6 +143,7 @@ public class SyntaxChecker {
 				System.out.println("	Execute Things");
 				
 				y++;
+				System.out.println(y);
 				String line = tokens[y].replace("\n", "");
 				arr = line.split(" ");
 				
@@ -305,7 +307,6 @@ public class SyntaxChecker {
 	}
 	
 	private boolean getCondition(String a, String relay, String b) {
-		// TODO Auto-generated method stub
 		
 		for(Variable v : variables) {
 			if(a.equals(v.getName())) {
@@ -511,10 +512,27 @@ public class SyntaxChecker {
 	}
 	
 	public boolean declaration(String text) {
-		
 		String[] tokens = text.split(" ");
+		
+		if(text.contains(",")) {
+			String multiple[] = text.split(",");
+			String type = "";
+			for(int x = 0; x < multiple.length; x++) {
+				if(x == 0) {
+					String first[] = multiple[x].split(" ");
+					type = first[0];
+				}
+				else {
+					multiple[x] = type + multiple[x];
+				}
 				
-		if(tokens.length == 2) {
+				if(!declaration(multiple[x])) {
+					return false;
+				}
+			}
+			return true;
+		}
+		else if(tokens.length == 2) {
 			if(type(tokens[0]) && legal(tokens[1])) {
 				Variable var = new Variable(tokens[0], tokens[1]);
 				opm.setConsoleText("Variable " + var.getName() + " of type " + var.getType() + " created");
@@ -530,7 +548,6 @@ public class SyntaxChecker {
 				return true;
 			}
 		}
-		
 		else if(containsOperator(text)) {
 			if(type(tokens[0]) && tokens[2].equals("=")) {
 				Variable var = new Variable(tokens[0], tokens[1]);
@@ -544,31 +561,10 @@ public class SyntaxChecker {
 			}
 		}
 		
-		else if(text.contains(",")) {
-			System.out.println("hello");
-			String multiple[] = text.split(",");
-			String type = "";
-			for(int x = 0; x < multiple.length; x++) {
-				if(x == 0) {
-					String first[] = multiple[x].split(" ");
-					type = first[0];
-				}
-				else {
-					multiple[x] = type + multiple[x];
-					System.out.println(multiple[x]);
-				}
-				
-				if(!declaration(multiple[x])) {
-					return false;
-				}
-			}
-			return true;
-		}
-		
 		return false;
 	}
 	
-	private boolean operation(Variable var, String operand1, String operator, String operand2) {
+	public boolean operation(Variable var, String operand1, String operator, String operand2) {
 		
 		operand1 = operand1.trim().replaceAll(" \n ", "");
 		operand2 = operand2.trim().replaceAll(" \n ", "");
@@ -605,46 +601,18 @@ public class SyntaxChecker {
 			return true;
 		
 		return false;
-			
-//				if(var.getType().equals(getType(operand2))) {
-//					op2 = "" + operand2;
-//					valid = true;
-//				}
-//			}
-//		}
-//		
-//		if(valid) {
-//			if(var.getType().equals("hotdog")) {
-//				int value1 = Integer.parseInt(op1);
-//				int value2 = Integer.parseInt(op2);
-//				result = "" + (value1 + value2);
-//			} else if(var.getType().equals("jumbo-hotdog")) {
-//				float value1 = Float.parseFloat(op1);
-//				float value2 = Float.parseFloat(op2);
-//				result = "" + (value1 + value2);
-//			} else if(var.getType().equals("letra")) {
-//				char value1 = op1.charAt(0);
-//				char value2 = op2.charAt(0);
-//				result = "" + value1 + value2;
-//			} else if(var.getType().equals("salita")) {
-//				String value1 = op1;
-//				String value2 = op2;
-//				result = "" + value1 + value2;
-//			}
-//			return result;
-//		}
-//		return "";
 	}
 
 	private String getType(String value) {
 		value = value.trim().replaceAll(" \n ", "");
-		if(value.matches("[a-zA-Z]")) {
+		if(value.contains("\"")) {
+			value = value.trim().replace("\"", "");
+			return "salita";
+		}
+		else if(value.contains("''")) {
+			value = value.trim().replace("\'", "");
 			if(value.length() == 1)
 				return "letra";
-			else if(value.length() > 1)
-				return "salita";
-			else if(value.matches("true | false | TRUE | FALSE"))
-				return "pag-ibig";
 		}
 		else if(value.matches(".*\\d+.*")) {
 			if(value.contains("."))
@@ -652,6 +620,9 @@ public class SyntaxChecker {
 			else
 				return "hotdog";
 		}
+		else if(value.equals("mahal_ko") | value.equals("mahal_ako"))
+			return "pag-ibig";
+		
 		return "";
 	}
 	
@@ -687,7 +658,6 @@ public class SyntaxChecker {
 		
 		if(valid) {
 			//assignment with operation
-			System.out.println("here in assignment with operation");
 			if(containsOperator(line)) {
 				subs[4] = subs[4].trim().replace(" \n ", "");
 				
@@ -714,9 +684,7 @@ public class SyntaxChecker {
 			}
 			else {
 				//assignment
-				System.out.println("here in assignment");
 				subs[2] = subs[2].trim().replace(" \n ", "");
-				System.out.print(subs[2]);
 				for(Variable v : variables) {
 					if(v.getName().equals(subs[2]) && variable_type.equals(v.getType())) {
 						op1 = subs[2];
