@@ -1,6 +1,0 @@
-program hello
-anak
-
-hotdog x, y, z = 5, charlotte
-
-tuldok
