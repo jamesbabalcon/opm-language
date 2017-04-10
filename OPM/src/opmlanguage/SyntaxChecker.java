@@ -54,7 +54,7 @@ public class SyntaxChecker {
 		String[] tokens = text.split("\n");
 		
 		for(int x = 0; x < tokens.length; x++) {
-			String line = tokens[x].trim().replace(" \n ", "");
+			String line = tokens[x].trim().replaceAll(" \n ", "");
 			
 			if(line.equals("anak")) {
 				matchStack.push("anak");
@@ -98,7 +98,19 @@ public class SyntaxChecker {
 			
 			//if assignment + operation; or assignment alone
 			if(!type(line.split(" ")[0]) && line.contains("=")) {
-				return assignment(line);
+				if(containsOperator(line)) {
+					for(Variable v : variables) {
+						if(v.getName().equals(line.split(" =")[0])) {
+							boolean valid = operation(v, line);
+							if(!valid)
+								opm.setConsoleText("Syntax error at line " + (x+1));
+							return valid;
+						}
+					}
+				}
+				else {
+					return assignment(line);
+				}
 			}
 			
 			
@@ -143,7 +155,6 @@ public class SyntaxChecker {
 				System.out.println("	Execute Things");
 				
 				y++;
-				System.out.println(y);
 				String line = tokens[y].replace("\n", "");
 				arr = line.split(" ");
 				
@@ -541,7 +552,7 @@ public class SyntaxChecker {
 			}
 		}
 		else if(tokens.length == 4 && legal(tokens[1])) {
-			if(type(tokens[0]) && tokens[2].equals("=")) {
+			if(type(tokens[0]) && tokens[2].equals("=") && tokens[0].equals(getType(tokens[3]))) {
 				Variable var = new Variable(tokens[0], tokens[1], tokens[3]);
 				opm.setConsoleText("Variable " + var.getName() + " of type " + var.getType() + " with value " + tokens[3] + " created");
 				variables.add(var);
@@ -552,55 +563,49 @@ public class SyntaxChecker {
 			if(type(tokens[0]) && tokens[2].equals("=")) {
 				Variable var = new Variable(tokens[0], tokens[1]);
 				variables.add(var);
-				boolean result = operation(var, tokens[3], tokens[4], tokens[5]);
-				if(result) {
-					opm.setConsoleText("Variable " + var.getName() + " of type " + var.getType() + " with value "
-				+ tokens[3] + tokens[4] + tokens[5] + " created");
-				}
-				return result;
+				return operation(var, text);
 			}
 		}
 		
 		return false;
 	}
 	
-	public boolean operation(Variable var, String operand1, String operator, String operand2) {
+	public boolean operation(Variable var, String text) {
 		
-		operand1 = operand1.trim().replaceAll(" \n ", "");
-		operand2 = operand2.trim().replaceAll(" \n ", "");
-		
-//		boolean valid = false;
-//		String op1 = "", op2 = "", result = "";
-			
-		for(Variable v1 : variables) {
-			if(v1.getName().equals(operand1) && v1.getType().equals(var.getType())) {
-//				op1 = "" + v1.getInitValue();
-//				op1 = op1.trim().replaceAll(" \n ", "");
-				for(Variable v2 : variables) {
-					if(v2.getName().equals(operand2) && v2.getType().equals(var.getType())) {
-//						op2 = "" + v2.getInitValue();
-//						valid = true;
-//						break;
-						return true;
-					}
-				}
-				if(var.getType().equals(getType(operand2))) {
-					return true;
-				}
-			}
+		if(var.getType().equals("letra") || var.getType().equals("pag-ibig")) {
+			return false;
 		}
 		
-		if(var.getType().equals(getType(operand1))) {
-			for(Variable v2 : variables) {
-				if(v2.getName().equals(operand2) && v2.getType().equals(var.getType()))
-					return true;
-			}
+		String[] tokens = text.split("= ")[1].split(" ");
+		ArrayList<String> operands = new ArrayList<String>();
+		ArrayList<String> operators = new ArrayList<String>();
+		
+		System.out.println(text);
+		for(String t : tokens) {
+			if(!containsOperator(t))
+				operands.add(t);
+			else if(containsOperator(t))
+				operators.add(t);
 		}
 		
-		if(var.getType().equals(getType(operand1)) && var.getType().equals(getType(operand2)))
-			return true;
+		if(operators.size() != operands.size() - 1)
+			return false;
 		
-		return false;
+		for(String o : operands) {
+			o = o.trim().replaceAll(" \n ", "").replace(" ", "");
+			for(Variable v : variables) {
+				if(v.getName().equals(o) && v.getType().equals(var.getType()))
+					continue;
+				else if(!v.getName().equals(o) && var.getType().equals(getType(o)))
+					continue;
+				else
+					return false;
+			}
+		}
+
+		opm.setConsoleText("Variable " + var.getName() + " of type " + var.getType() + " with value ");
+		opm.setConsoleText(text.split("=")[1] + " created");
+		return true;
 	}
 
 	private String getType(String value) {
@@ -609,8 +614,9 @@ public class SyntaxChecker {
 			value = value.trim().replace("\"", "");
 			return "salita";
 		}
-		else if(value.contains("''")) {
+		else if(value.contains("'")) {
 			value = value.trim().replace("\'", "");
+			System.out.println(value);
 			if(value.length() == 1)
 				return "letra";
 		}
@@ -634,77 +640,41 @@ public class SyntaxChecker {
 		
 		return null;
 	}
-
-//	/*private void getValue() {
-//		
-//	}
-
+	
 	private boolean assignment(String line) {
-		String [] subs = line.split(" ");
-		String op1 = "", op2 = "", variable = "";
-		String variable_type = "";
-		boolean valid = false;
+		System.out.println("here in assignment: " + line);
+		String [] subs = line.split("=");
+		String variable = "", value = "";
+		String variable_type = "", value_type = "";
 		
 		for(Variable v : variables) {
-			subs[0] = subs[0].trim().replace(" \n ", "");
+			subs[0] = subs[0].trim().replace(" ", "");
+			subs[1] = subs[1].trim().replace(" ", "").replace(" \n ", ""); 
 			v.setName(v.getName().trim().replace(" \n ", ""));
 			if(subs[0].equals(v.getName())) {
 				variable = subs[0];
 				variable_type = v.getType();
-				valid = true;
-				System.out.println(valid);
+			}
+			if(subs[1].equals(v.getName())) {
+				value = subs[1];
+				value_type = v.getType();
 			}
 		}
 		
-		if(valid) {
-			//assignment with operation
-			if(containsOperator(line)) {
-				subs[4] = subs[4].trim().replace(" \n ", "");
-				
-				for(Variable v : variables) {
-					if(subs[2].equals(v.getName()))
-						op1 = subs[2];
-						
-					if(subs[4].equals(v.getName()))
-						op2 = subs[4];
+		if(!variable.isEmpty()) {
+			if(value.isEmpty()) {
+				if(getType(subs[1]).equals(variable_type)) {
+					value = subs[1];
+					value_type = variable_type;
 				}
-				
-				if(op1.isEmpty()) {
-					if(variable_type.equals(getType(subs[2])))
-						op1 = subs[2];
+				if(!value.isEmpty() && variable_type.equals(value_type)) {
+					opm.setConsoleText("Variable " + variable + " is given a value of "
+							+ value);
+					return true;
 				}
-				
-				if(op2.isEmpty()) {
-					if(variable_type.equals(getType(subs[4]))) {
-						op2 = subs[4];
-					}
-				}
-				
-				opm.setConsoleText("Variable " + variable + " is given a value " + op1 + " " + subs[3] + " " + op2);
-			}
-			else {
-				//assignment
-				subs[2] = subs[2].trim().replace(" \n ", "");
-				for(Variable v : variables) {
-					if(v.getName().equals(subs[2]) && variable_type.equals(v.getType())) {
-						op1 = subs[2];
-					}
-				}
-				
-				if(variable_type.equals(getType(subs[2])))
-					op1 = subs[2];
-				else
-					return false;
-				
-				opm.setConsoleText("Variable " + variable + " is given a value " + op2);
-			}
-			
-			if(op1.isEmpty() && op2.isEmpty()) {
-				return false;
-			}
+			}		
 		}
-		
-		return valid;
+		return false;		
 	}
 	
 	public boolean print(String text) {
