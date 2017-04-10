@@ -84,9 +84,10 @@ public class SyntaxChecker {
 			//loop statements
 			if(line.split(" ")[0].equals("hanggang-kailan"))
 				x = whileLoop(tokens, x);
+			
 			if(line.split(" ")[0].equals("doo-bidoo"))
 				x = dowhile(tokens, x);
-			
+	
 			if(type(line.split(" ")[0])) {
 				if(declaration(line))
 					continue;
@@ -104,12 +105,12 @@ public class SyntaxChecker {
 							boolean valid = operation(v, line);
 							if(!valid)
 								opm.setConsoleText("Syntax error at line " + (x+1));
-							return valid;
 						}
 					}
 				}
 				else {
-					return assignment(line);
+					if(!assignment(line));
+					opm.setConsoleText("Syntax error at line " + (x+1));
 				}
 			}
 			
@@ -137,7 +138,6 @@ public class SyntaxChecker {
 				return false;
 			}
 		}
-		
 		return false;
 	}
 	
@@ -234,7 +234,7 @@ public class SyntaxChecker {
 				System.out.println(" ----->false");
 				
 				x++;
-				String line2 = tokens[x].replace("\n", "");
+				String line2 = tokens[x].trim().replaceAll(" \n ", "");
 				String[] arr2 = line2.split(" ");
 				
 				while(!arr2[0].equals("tuldok")){
@@ -603,8 +603,8 @@ public class SyntaxChecker {
 			}
 		}
 
-		opm.setConsoleText("Variable " + var.getName() + " of type " + var.getType() + " with value ");
-		opm.setConsoleText(text.split("=")[1] + " created");
+		opm.setConsoleText("Variable " + var.getName() + "is assigned a value of ");
+		opm.setConsoleText(text.split("=")[1]);
 		return true;
 	}
 
