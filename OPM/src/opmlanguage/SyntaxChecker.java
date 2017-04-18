@@ -60,7 +60,7 @@ public class SyntaxChecker {
 				matchStack.push("anak");
 				opm.setConsoleText("Pushing to Stack");
 			}
-			if(line.equals("tuldok") && !matchStack.isEmpty()) {
+			else if(line.equals("tuldok") && !matchStack.isEmpty()) {
 				matchStack.pop();
 				opm.setConsoleText("Popping from Stack");
 			}
@@ -70,24 +70,24 @@ public class SyntaxChecker {
 			}
 			
 			//comment
-			if(line.split(" ")[0].equals("--"))
+			else if(line.split(" ")[0].equals("--"))
 				opm.setConsoleText("Comment: " + line.substring(3));
-			if(line.split(" ")[0].equals("-*")){
+			else if(line.split(" ")[0].equals("-*")){
 				System.out.print("Comment: ");
 				comment(tokens, x);
 			}
 			
 			//branch statements
-			if(line.split(" ")[0].equals("kung-ako-nalang-sana")) 
+			else if(line.split(" ")[0].equals("kung-ako-nalang-sana")) 
 				x = branch(tokens, x, line.split(" ")[0]);
 			
 			//loop statements
-			if(line.split(" ")[0].equals("hanggang-kailan"))
+			else if(line.split(" ")[0].equals("hanggang-kailan"))
 				x = whileLoop(tokens, x);
-			if(line.split(" ")[0].equals("doo-bidoo"))
+			else if(line.split(" ")[0].equals("doo-bidoo"))
 				x = dowhile(tokens, x);
 			
-			if(type(line.split(" ")[0])) {
+			else if(type(line.split(" ")[0])) {
 				if(declaration(line))
 					continue;
 				else {
@@ -95,14 +95,14 @@ public class SyntaxChecker {
 					return false;
 				}
 			}
-			if(line.split(":")[0].equals("sabihin-mo-na")) {
+			else if(line.split(":")[0].equals("sabihin-mo-na")) {
 				if(print(line)) {
 					continue;
 				}
 				else
 					return false;
 			}
-			if(line.split(":")[0].equals("nandito-ako")) {
+			else if(line.split(":")[0].equals("nandito-ako")) {
 				if(scan(line)) {
 					continue;
 				}
@@ -110,7 +110,7 @@ public class SyntaxChecker {
 					return false;
 			}
 			
-			if(x == tokens.length - 1 && matchStack.isEmpty()) {
+			else if(x == tokens.length - 1 && matchStack.isEmpty()) {
 				opm.setConsoleText("End of File, Stack is Empty");
 				return true;
 			}
